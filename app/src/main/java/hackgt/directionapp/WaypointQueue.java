@@ -33,8 +33,8 @@ public class WaypointQueue {
      * @return              true if the location is within the waypoint; false otherwise.
      */
     public boolean hasReachedNextWaypoint(Location location) {
-        double distance = Math.sqrt(Math.pow(current.getLatitude() - previous.getLatitude(), 2)
-                + Math.pow(current.getLongitude() - previous.getLongitude(), 2));
+        double distance = Math.sqrt(Math.pow(current.getLatitude() - location.getLatitude(), 2)
+                + Math.pow(current.getLongitude() - location.getLongitude(), 2));
         return (distance < (1 / 2500));
     }
 
