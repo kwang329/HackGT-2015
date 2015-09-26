@@ -34,6 +34,8 @@ public class ParserTask extends AsyncTask<String, Integer, List<List<HashMap<Str
         return routes;
     }
 
+
+    // However we want to handle the data, I'm pretty sure we do it here.
     @Override
     protected void onPostExecute(List<List<HashMap<String, String>>> result) {
         ArrayList points = null;

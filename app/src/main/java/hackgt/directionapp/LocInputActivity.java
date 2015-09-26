@@ -56,12 +56,15 @@ public class LocInputActivity extends AppCompatActivity {
         //Bundle bundle = ApplicationInfo.metaData;
         //String key = bundle.getString("my_api_key");
 
-        String parameters = origin + "&" + destination + "& key=AIzaSyCEIowunK5yoWCnll0NkHDFX13blVy9JoI";
+        String parameters = origin + "&" + destination + "&key=AIzaSyCEIowunK5yoWCnll0NkHDFX13blVy9JoI";
         //Hardcoded  key because I can't be bothered to get ApplicationInfo to work. Big safety issue here though
-        String url = "http://maps.googleapis.com/maps/api/directions/json?" + parameters;
-
-
+        String url = "https://maps.googleapis.com/maps/api/directions/json?" + parameters;
+        download(url);
     }
 
+    private void download(String url) {
+        DownloadTask dt = new DownloadTask();
+        dt.doInBackground(url);
+    }
 
 }
