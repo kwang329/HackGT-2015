@@ -65,6 +65,10 @@
             android:name=".LocInputActivity"
             android:label="@string/title_activity_loc_input" >
         </activity>
+        <activity
+            android:name=".LocUpdater"
+            android:label="@string/title_activity_loc_updater" >
+        </activity>
     </application>
 
 </manifest>
