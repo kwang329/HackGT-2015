@@ -12,7 +12,6 @@
         android:inputType="textPostalAddress"
         android:ems="10"
         android:id="@+id/addr1"
-        android:layout_below="@+id/textView"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="70dp" />
 
@@ -22,10 +21,9 @@
         android:inputType="textPostalAddress"
         android:ems="10"
         android:id="@+id/addr2"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="65dp"
         android:layout_below="@+id/addr1"
-        android:layout_toRightOf="@+id/textView"
-        android:layout_toEndOf="@+id/textView" />
+        android:layout_centerHorizontal="true" />
 
     <Button
         android:layout_width="wrap_content"
