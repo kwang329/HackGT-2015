@@ -7,4 +7,5 @@
     <string name="CameraButtonName">Camera</string>
     <string name="title_activity_camera">CameraActivity</string>
     <string name="title_activity_map">MapActivity</string>
+    <string name="title_activity_test_maps">Map</string>
 </resources>
