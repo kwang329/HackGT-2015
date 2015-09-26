@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void openMapActivity(View view) {
-        Intent switchToMap = new Intent(this, MapActivity.class);
+        Intent switchToMap = new Intent(this, TestMapsActivity.class);
         startActivity(switchToMap);
     }
 
