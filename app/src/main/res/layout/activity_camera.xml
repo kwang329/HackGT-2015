@@ -5,8 +5,10 @@
     tools:context="hackgt.directionapp.CameraActivity">
 
     <TextureView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="1440dp"
+        android:layout_height="1080dp"
         android:id="@+id/textureView"
-        android:layout_gravity="center" />
+        android:layout_gravity="center"
+        android:layout_marginTop="100dp"
+        android:layout_marginBottom="100dp" />
 </RelativeLayout>

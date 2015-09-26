@@ -1,9 +1,12 @@
 package hackgt.directionapp;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import android.app.Activity;
+import android.graphics.Matrix;
 import android.graphics.SurfaceTexture;
+import android.graphics.drawable.Drawable;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CameraCharacteristics;
@@ -15,14 +18,23 @@ import android.hardware.camera2.params.StreamConfigurationMap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.util.Size;
+import android.view.LayoutInflater;
 import android.view.Surface;
 import android.view.TextureView;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 public class CameraActivity extends Activity {
+
+    private int counter;
 
     private final static String TAG = "SimpleCamera";
     private TextureView mTextureView = null;
@@ -33,9 +45,13 @@ public class CameraActivity extends Activity {
     private TextureView.SurfaceTextureListener mSurfaceTextureListener = new PreviewDisplay();
     private CameraDevice.StateCallback mStateCallback = new StateCallback();
     private CameraCaptureSession.StateCallback mPreviewStateCallback = new PreviewStateCallback();
+    private LayoutInflater cameraOverlay;
+    private Drawable overlayArrow;
+    private ImageView overlayView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        counter = 0;
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -44,6 +60,24 @@ public class CameraActivity extends Activity {
 
         mTextureView = (TextureView) findViewById(R.id.textureView);
         mTextureView.setSurfaceTextureListener(mSurfaceTextureListener);
+
+        overlayArrow = ContextCompat.getDrawable(this, R.drawable.arrow);
+        cameraOverlay = LayoutInflater.from(getBaseContext());
+        View viewControl = cameraOverlay.inflate(R.layout.camera_overlay, null);
+        ViewGroup.LayoutParams layoutParamsControl
+                = new LayoutParams(LayoutParams.MATCH_PARENT,
+                LayoutParams.MATCH_PARENT);
+        this.addContentView(viewControl, layoutParamsControl);
+        overlayView = (ImageView) findViewById(R.id.overlayView);
+        overlayView.setRotation(90);
+        overlayView.setImageDrawable(overlayArrow);
+    }
+
+    private double getDistanceToTarget() {
+        final double DISTANCE = 500;
+        double dist = DISTANCE - counter;
+        counter++;
+        return dist;
     }
 
     @Override
@@ -62,6 +96,12 @@ public class CameraActivity extends Activity {
         public void onSurfaceTextureUpdated(SurfaceTexture surface) {
             // Log.i(TAG, "onSurfaceTextureUpdated()");
             Log.d(TAG, surface.toString());
+            double newDist = getDistanceToTarget();
+            float newScaleX = (float) (1 - newDist / 500);
+            float newScaleY = (float) (1 - newDist / 500);
+            Log.d(TAG, newScaleX + ", " + newScaleY);
+            overlayView.setScaleX(newScaleX);
+            overlayView.setScaleY(newScaleY);
         }
 
         @Override
@@ -126,7 +166,7 @@ public class CameraActivity extends Activity {
             mPreviewBuilder.addTarget(surface);
 
             try {
-                mCameraDevice.createCaptureSession(Arrays.asList(surface),
+                mCameraDevice.createCaptureSession(Collections.singletonList(surface),
                         mPreviewStateCallback, null);
             } catch (CameraAccessException e) {
                 e.printStackTrace();
