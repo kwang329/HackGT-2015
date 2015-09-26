@@ -11,21 +11,4 @@
         android:layout_height="wrap_content"
         android:id="@+id/locationLabel" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="0"
-        android:id="@+id/counter"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Updates: "
-        android:id="@+id/textView"
-        android:layout_alignParentTop="true"
-        android:layout_alignEnd="@+id/counter"
-        android:layout_marginRight="5dp" />
-
 </RelativeLayout>

@@ -23,6 +23,7 @@ public class LocUpdater extends Activity implements GoogleApiClient.ConnectionCa
     private double lng = 35.5;
     private LocationRequest mLocationRequest = new LocationRequest();
     private int counter = 0;
+    WaypointQueue queue;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -80,9 +81,17 @@ public class LocUpdater extends Activity implements GoogleApiClient.ConnectionCa
         TextView locationLabel = (TextView) findViewById(R.id.locationLabel);
         locationLabel.setText(locationLabel.getText() + "\n(" + location.getLatitude()
                 + ", " + location.getLongitude() + ")");
-        TextView counterLabel = (TextView) findViewById(R.id.counter);
-        counter++;
-        counterLabel.setText("" + counter);
+        if (queue.hasReachedNextWaypoint(location)) {
+            queue.goToNextWaypoint();
+        }
+        if (queue.finishedPath()) {
+            stopLocationRequest();
+        }
+    }
+
+    public void stopLocationRequest() {
+        LocationServices.FusedLocationApi.removeLocationUpdates(
+                mGoogleApiClient, this);
     }
 
     @Override
