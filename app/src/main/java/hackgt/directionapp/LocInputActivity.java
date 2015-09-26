@@ -4,6 +4,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.text.TextUtils;
+import android.widget.EditText;
 
 public class LocInputActivity extends AppCompatActivity {
 
@@ -33,5 +36,14 @@ public class LocInputActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void submitAddresses(View view) {
+        EditText loc1 = (EditText) findViewById(R.id.addr1);
+        EditText loc2 = (EditText) findViewById(R.id.addr2);
+        String addr1 = loc1.getText().toString();
+        String addr2 = loc2.getText().toString();
+        System.out.println(addr1);
+        System.out.println(addr2);
     }
 }

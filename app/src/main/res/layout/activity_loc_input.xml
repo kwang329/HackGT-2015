@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:inputType="textPostalAddress"
         android:ems="10"
-        android:id="@+id/editText"
+        android:id="@+id/addr1"
         android:layout_below="@+id/textView"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="70dp" />
@@ -25,19 +25,20 @@
         android:layout_height="wrap_content"
         android:inputType="textPostalAddress"
         android:ems="10"
-        android:id="@+id/editText2"
-        android:layout_below="@+id/editText"
+        android:id="@+id/addr2"
+        android:layout_marginTop="48dp"
+        android:layout_below="@+id/addr1"
         android:layout_toRightOf="@+id/textView"
-        android:layout_toEndOf="@+id/textView"
-        android:layout_marginTop="125dp" />
+        android:layout_toEndOf="@+id/textView" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Button"
+        android:text="Get Directions"
         android:id="@+id/button3"
         android:layout_marginTop="70dp"
-        android:layout_below="@+id/editText2"
-        android:layout_centerHorizontal="true" />
+        android:layout_below="@+id/addr2"
+        android:layout_centerHorizontal="true"
+        android:onClick="submitAddresses" />
 
 </RelativeLayout>
