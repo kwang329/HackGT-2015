@@ -14,7 +14,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class TestMapsActivity extends FragmentActivity {
 
-    private GoogleMap mMap; // Might be null if Google Play services APK is not available.
+    public static GoogleMap mMap; // Might be null if Google Play services APK is not available.
 
     //LocationManager locationManager = (LocationManager)
             //getSystemService(Context.LOCATION_SERVICE);
