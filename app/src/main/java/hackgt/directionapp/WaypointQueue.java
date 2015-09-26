@@ -1,6 +1,6 @@
 package hackgt.directionapp;
 
-import android.graphics.Point;
+import android.location.Location;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -9,7 +9,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * Created by Ojan on 9/26/2015.
  */
 public class WaypointQueue {
-    Queue<Point> pointQueue;
+    Queue<Location> pointQueue;
+    Location current, previous;
 
     public WaypointQueue() {
         pointQueue = new ConcurrentLinkedQueue<>();
@@ -19,18 +20,22 @@ public class WaypointQueue {
      * Advances the queue.
      * @return  the waypoint that was just reached.
      */
-    public Point goToNextWaypoint() {
-        return null;
+    public Location goToNextWaypoint() {
+        previous = current;
+        current = pointQueue.remove();
+        return current;
     }
 
     /**
-     * Determines if the given location is within the bounds for
+     * Determines if the given location is within 1/2500 of a degree of
      * the next waypoint.
      * @param location      the query location.
-     * @return              true if the location is within the waypoint; flase otherwise.
+     * @return              true if the location is within the waypoint; false otherwise.
      */
-    public boolean hasReachedNextWaypoint(Point location) {
-        return false;
+    public boolean hasReachedNextWaypoint(Location location) {
+        double distance = Math.sqrt(Math.pow(current.getLatitude() - previous.getLatitude(), 2)
+                + Math.pow(current.getLongitude() - previous.getLongitude(), 2));
+        return (distance < (1 / 2500));
     }
 
     /**
@@ -38,6 +43,6 @@ public class WaypointQueue {
      * @return  true if all waypoints are reached (queue is empty); false otherwise;
      */
     public boolean finishedPath() {
-        return false;
+        return pointQueue.isEmpty();
     }
 }
