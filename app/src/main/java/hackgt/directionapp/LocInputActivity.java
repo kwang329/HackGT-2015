@@ -1,25 +1,22 @@
 package hackgt.directionapp;
 
-import android.content.Intent;
-import android.util.Log;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
-public class MainActivity extends AppCompatActivity {
-    private static final String TAG = MainActivity.class.getSimpleName();
+public class LocInputActivity extends AppCompatActivity {
 
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_loc_input);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_loc_input, menu);
         return true;
     }
 
@@ -36,20 +33,5 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    public void openMapActivity(View view) {
-        Intent switchToMap = new Intent(this, TestMapsActivity.class);
-        startActivity(switchToMap);
-    }
-
-    public void openCameraActivity(View view) {
-        Intent switchToCamera = new Intent(this, CameraActivity.class);
-        startActivity(switchToCamera);
-    }
-
-    public void openInputActivity(View view) {
-        Intent switchToInput = new Intent(this, LocInputActivity.class);
-        startActivity(switchToInput);
     }
 }

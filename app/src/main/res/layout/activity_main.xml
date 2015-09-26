@@ -23,4 +23,15 @@
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
         android:onClick="openCameraActivity" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/InputButtonName"
+        android:id="@+id/button3"
+        android:onClick="openInputActivity"
+        android:layout_below="@+id/button2"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="80dp" />
 </RelativeLayout>

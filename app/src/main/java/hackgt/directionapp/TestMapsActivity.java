@@ -1,16 +1,26 @@
 package hackgt.directionapp;
 
+import android.content.Context;
+import android.location.LocationManager;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class TestMapsActivity extends FragmentActivity {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
+
+    //LocationManager locationManager = (LocationManager)
+            //getSystemService(Context.LOCATION_SERVICE);
+
+    double lat = 33.7550;   //Test code
+    double lon = -84.3900;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +58,8 @@ public class TestMapsActivity extends FragmentActivity {
                     .getMap();
             // Check if we were successful in obtaining the map.
             if (mMap != null) {
-                setUpMap();
+                //setUpMap();
+                setUpMap(lat, lon);
             }
         }
     }
@@ -61,5 +72,14 @@ public class TestMapsActivity extends FragmentActivity {
      */
     private void setUpMap() {
         mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
+    }
+
+    /**
+     * This allows the map to center to the current user's location
+     */
+    private void setUpMap(double lat, double lon) {
+        LatLng latLng = new LatLng(lat, lon);
+        mMap.addMarker(new MarkerOptions().position(latLng).title("Marker"));
+        CameraUpdateFactory.newCameraPosition(CameraPosition.fromLatLngZoom(latLng, 1));
     }
 }

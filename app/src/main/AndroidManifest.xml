@@ -60,6 +60,10 @@
             android:name=".TestMapsActivity"
             android:label="@string/title_activity_test_maps" >
         </activity>
+        <activity
+            android:name=".LocInputActivity"
+            android:label="@string/title_activity_loc_input" >
+        </activity>
     </application>
 
 </manifest>
