@@ -11,7 +11,6 @@ import android.view.View;
 import android.text.TextUtils;
 import android.widget.EditText;
 import org.json.JSONObject;
-import com.google.gson.Gson;
 
 public class LocInputActivity extends AppCompatActivity {
 
