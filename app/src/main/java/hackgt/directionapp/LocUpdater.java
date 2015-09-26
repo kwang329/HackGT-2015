@@ -11,6 +11,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 /**
  * Contains the methods for continuous location updates
  * Created by Kaiwen on 9/26/2015.
@@ -22,7 +25,6 @@ public class LocUpdater extends Activity implements GoogleApiClient.ConnectionCa
     private double lat = 31.5; //Our default location is now the Dead Sea. Because I feel like it.
     private double lng = 35.5;
     private LocationRequest mLocationRequest = new LocationRequest();
-    private int counter = 0;
     WaypointQueue queue;
 
     @Override
