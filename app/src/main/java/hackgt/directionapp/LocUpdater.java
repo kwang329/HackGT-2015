@@ -53,7 +53,7 @@ public class LocUpdater extends Activity implements GoogleApiClient.ConnectionCa
             lng = mLastLocation.getLongitude();
         }
         TextView locationLabel = (TextView) findViewById(R.id.locationLabel);
-        locationLabel.setText("{" + lat + ", " + lng + ")");
+        locationLabel.setText("(" + lat + ", " + lng + ")");
         startLocationUpdates();
     }
 
