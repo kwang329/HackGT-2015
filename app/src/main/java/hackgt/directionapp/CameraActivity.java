@@ -4,6 +4,10 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import android.app.Activity;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.Matrix;
 import android.graphics.SurfaceTexture;
 import android.graphics.drawable.Drawable;
@@ -15,9 +19,11 @@ import android.hardware.camera2.CameraManager;
 import android.hardware.camera2.CameraMetadata;
 import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.params.StreamConfigurationMap;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.os.IBinder;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.util.Size;
@@ -36,7 +42,7 @@ public class CameraActivity extends Activity {
 
     private int counter;
 
-    private final static String TAG = "SimpleCamera";
+    private final static String TAG = CameraActivity.class.getSimpleName();
     private TextureView mTextureView = null;
     private Size mPreviewSize = null;
     private CameraDevice mCameraDevice = null;
@@ -47,7 +53,24 @@ public class CameraActivity extends Activity {
     private CameraCaptureSession.StateCallback mPreviewStateCallback = new PreviewStateCallback();
     private LayoutInflater cameraOverlay;
     private Drawable overlayArrow;
-    private ImageView overlayView;
+    private TurnArrow overlayView;
+    private LocUpdater locUpdaterService;
+    private boolean locUpdaterBound;
+
+    private ServiceConnection mConnection =  new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            LocUpdater.LocationUpdaterBinder binder = (LocUpdater.LocationUpdaterBinder) service;
+            locUpdaterService = binder.getService();
+            locUpdaterBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            locUpdaterBound = false;
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,16 +91,16 @@ public class CameraActivity extends Activity {
                 = new LayoutParams(LayoutParams.MATCH_PARENT,
                 LayoutParams.MATCH_PARENT);
         this.addContentView(viewControl, layoutParamsControl);
-        overlayView = (ImageView) findViewById(R.id.overlayView);
+        overlayView = (TurnArrow) findViewById(R.id.overlayView);
         overlayView.setRotation(90);
         overlayView.setImageDrawable(overlayArrow);
-    }
-
-    private double getDistanceToTarget() {
-        final double DISTANCE = 500;
-        double dist = DISTANCE - counter;
-        counter++;
-        return dist;
+        Location waypoint = new Location("");
+        waypoint.setLatitude(33.775117);
+        waypoint.setLongitude(-84.396599);
+        overlayView.setLocation(waypoint); // null should be location of the waypoint
+        Intent trackLocation = new Intent(this, LocUpdater.class);
+        bindService(trackLocation, mConnection, Context.BIND_AUTO_CREATE);
+        startService(trackLocation);
     }
 
     @Override
@@ -95,13 +118,13 @@ public class CameraActivity extends Activity {
         @Override
         public void onSurfaceTextureUpdated(SurfaceTexture surface) {
             // Log.i(TAG, "onSurfaceTextureUpdated()");
-            Log.d(TAG, surface.toString());
-            double newDist = getDistanceToTarget();
-            float newScaleX = (float) (1 - newDist / 500);
-            float newScaleY = (float) (1 - newDist / 500);
-            Log.d(TAG, newScaleX + ", " + newScaleY);
-            overlayView.setScaleX(newScaleX);
-            overlayView.setScaleY(newScaleY);
+            if (locUpdaterBound) {
+                overlayView.approachArrow(locUpdaterService.getCurrentLocation());
+                if (locUpdaterService.getCurrentLocation() != null) {
+                    Log.d(TAG, locUpdaterService.getCurrentLocation().getLatitude() + ", " + locUpdaterService.getCurrentLocation().getLongitude());
+                    Log.d(TAG, locUpdaterService.getCurrentLocation().distanceTo(overlayView.getLocation()) + "");
+                }
+            }
         }
 
         @Override

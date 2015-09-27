@@ -4,10 +4,15 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
-import android.app.Activity;
 
+import android.app.Service;
+import android.content.Intent;
 import android.location.Location;
+import android.os.Binder;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -15,29 +20,26 @@ import android.widget.TextView;
  * Contains the methods for continuous location updates
  * Created by Kaiwen on 9/26/2015.
  */
-public class LocUpdater extends Activity implements GoogleApiClient.ConnectionCallbacks, LocationListener,
+public class LocUpdater extends Service implements GoogleApiClient.ConnectionCallbacks, LocationListener,
         GoogleApiClient.OnConnectionFailedListener {
 
     private GoogleApiClient mGoogleApiClient;
     private double lat = 31.5; //Our default location is now the Dead Sea. Because I feel like it.
     private double lng = 35.5;
     private LocationRequest mLocationRequest = new LocationRequest();
-    private int counter = 0;
     WaypointQueue queue;
+    private Location currentLocation;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
+    public void onCreate() {
         buildGoogleApiClient();
         createLocationRequest();
-        setContentView(R.layout.activity_loc_updater);
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public int onStartCommand(Intent intent, int flags, int startId) {
         mGoogleApiClient.connect();
+        return START_STICKY;
     }
 
     public void buildGoogleApiClient() {
@@ -53,8 +55,7 @@ public class LocUpdater extends Activity implements GoogleApiClient.ConnectionCa
             lat = mLastLocation.getLatitude();
             lng = mLastLocation.getLongitude();
         }
-        TextView locationLabel = (TextView) findViewById(R.id.locationLabel);
-        locationLabel.setText("(" + lat + ", " + lng + ")");
+        currentLocation = mLastLocation;
         startLocationUpdates();
     }
 
@@ -78,6 +79,7 @@ public class LocUpdater extends Activity implements GoogleApiClient.ConnectionCa
 
     @Override
     public void onLocationChanged(Location location) {
+        currentLocation = location;
         TextView locationLabel = (TextView) findViewById(R.id.locationLabel);
         locationLabel.setText(locationLabel.getText() + "\n(" + location.getLatitude()
                 + ", " + location.getLongitude() + ")");
@@ -97,5 +99,22 @@ public class LocUpdater extends Activity implements GoogleApiClient.ConnectionCa
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
 
+    }
+
+    public class LocationUpdaterBinder extends Binder {
+        public LocUpdater getService() {
+            return LocUpdater.this;
+        }
+    }
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        Log.d(TAG, "bound");
+        return new LocationUpdaterBinder();
+    }
+
+    public Location getCurrentLocation() {
+        return currentLocation;
     }
 }
