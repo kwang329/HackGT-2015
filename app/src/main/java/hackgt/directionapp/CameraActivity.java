@@ -38,6 +38,8 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 public class CameraActivity extends Activity {
 
     private int counter;
@@ -56,6 +58,7 @@ public class CameraActivity extends Activity {
     private TurnArrow overlayView;
     private LocUpdater locUpdaterService;
     private boolean locUpdaterBound;
+    private WaypointQueue waypointQueue;
 
     private ServiceConnection mConnection =  new ServiceConnection() {
 
@@ -63,17 +66,18 @@ public class CameraActivity extends Activity {
         public void onServiceConnected(ComponentName name, IBinder service) {
             LocUpdater.LocationUpdaterBinder binder = (LocUpdater.LocationUpdaterBinder) service;
             locUpdaterService = binder.getService();
-            WaypointQueue queue = new WaypointQueue();
+            waypointQueue = new WaypointQueue();
             Location l = new Location("");
-            l.setLatitude(33.775218);
-            l.setLongitude(-84.396561);
-            queue.add(l);
+            l.setLatitude(33.775668);
+            l.setLongitude(-84.396663);
+            waypointQueue.add(l);
             l = new Location("");
             l.setLatitude(33.776624);
             l.setLongitude(-84.396607);
-            queue.add(l);
+            waypointQueue.add(l);
             locUpdaterService.setTurnArrow(overlayView);
-            locUpdaterService.setWaypointQueue(queue);
+            overlayView.setLocation(waypointQueue.getCurrentWaypoint());
+            locUpdaterService.setWaypointQueue(waypointQueue);
             locUpdaterBound = true;
         }
 
@@ -105,10 +109,6 @@ public class CameraActivity extends Activity {
         overlayView = (TurnArrow) findViewById(R.id.overlayView);
         overlayView.setRotation(90);
         overlayView.setImageDrawable(overlayArrow);
-        Location waypoint = new Location("");
-        waypoint.setLatitude(33.775117);
-        waypoint.setLongitude(-84.396599);
-        overlayView.setLocation(waypoint);
         Intent trackLocation = new Intent(this, LocUpdater.class);
         bindService(trackLocation, mConnection, Context.BIND_AUTO_CREATE);
         startService(trackLocation);
@@ -129,13 +129,29 @@ public class CameraActivity extends Activity {
         @Override
         public void onSurfaceTextureUpdated(SurfaceTexture surface) {
             // Log.i(TAG, "onSurfaceTextureUpdated()");
+            Location loc = locUpdaterService.getCurrentLocation();
+            if (loc != null) {
+                ((TextView) findViewById(R.id.currentPos)).setText("Current: " + loc.getLatitude() + ", " + loc.getLongitude());
+            }
+            if (waypointQueue != null) {
+                if (waypointQueue.finishedPath()) {
+                    ((TextView) findViewById(R.id.distance)).setText("All done");
+                } else {
+                    Location target = waypointQueue.getCurrentWaypoint();
+                    if (target != null) {
+                        ((TextView) findViewById(R.id.targetPos)).setText("Target: " + target.getLatitude() + ", " + target.getLongitude());
+                        if (loc != null) {
+                            ((TextView) findViewById(R.id.distance)).setText("Distance: " + loc.distanceTo(target));
+                        }
+                    }
+                }
+            }
         }
 
         @Override
         public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width,
                                                 int height) {
             Log.i(TAG, "onSurfaceTextureSizeChanged(" + width + ", " + height + ")");
-
         }
 
         @Override

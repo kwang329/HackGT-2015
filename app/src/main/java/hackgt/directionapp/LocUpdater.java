@@ -33,6 +33,7 @@ public class LocUpdater extends Service implements GoogleApiClient.ConnectionCal
     WaypointQueue queue;
     private Location currentLocation;
     private TurnArrow arrow;
+    private boolean stopAcceptingChanges = false;
 
     @Override
     public void onCreate() {
@@ -83,12 +84,19 @@ public class LocUpdater extends Service implements GoogleApiClient.ConnectionCal
 
     @Override
     public void onLocationChanged(Location location) {
-        if (location != null) {
+        if (!stopAcceptingChanges && location != null) {
             currentLocation = location;
             if (queue.hasReachedNextWaypoint(location)) {
-                queue.goToNextWaypoint();
+                Location loc = queue.goToNextWaypoint();
+                if (loc != null) {
+                    arrow.setLocation(loc);
+                } else {
+                    stopAcceptingChanges = true;
+                    stopLocationRequest();
+                }
             }
             if (queue.finishedPath()) {
+                stopAcceptingChanges = true;
                 stopLocationRequest();
             }
             arrow.approachArrow(currentLocation);

@@ -2,18 +2,20 @@ package hackgt.directionapp;
 
 import android.location.Location;
 
+import java.util.ArrayDeque;
 import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Created by Ojan on 9/26/2015.
  */
 public class WaypointQueue {
+    public static final int WAYPOINT_RADIUS = 20;
+
     Queue<Location> pointQueue;
     Location current, previous;
 
     public WaypointQueue() {
-        pointQueue = new ConcurrentLinkedQueue<>();
+        pointQueue = new ArrayDeque<>();
     }
 
     public WaypointQueue(Queue<Location> queue) {
@@ -33,8 +35,12 @@ public class WaypointQueue {
      * @return  the waypoint that was just reached.
      */
     public Location goToNextWaypoint() {
-        previous = current;
-        current = pointQueue.remove();
+        if (pointQueue.isEmpty()) {
+            current = null;
+        } else {
+            previous = current;
+            current = pointQueue.remove();
+        }
         return current;
     }
 
@@ -45,8 +51,16 @@ public class WaypointQueue {
      * @return              true if the location is within the waypoint; false otherwise.
      */
     public boolean hasReachedNextWaypoint(Location location) {
-        double distance = current.distanceTo(location);
-        return (distance < 50);
+        if (current != null && location != null) {
+            double distance = current.distanceTo(location);
+            return (distance < WAYPOINT_RADIUS);
+        } else {
+            return false;
+        }
+    }
+
+    public Location getCurrentWaypoint() {
+        return current;
     }
 
     /**
@@ -54,6 +68,6 @@ public class WaypointQueue {
      * @return  true if all waypoints are reached (queue is empty); false otherwise;
      */
     public boolean finishedPath() {
-        return pointQueue.isEmpty();
+        return pointQueue.isEmpty() && current == null;
     }
 }
