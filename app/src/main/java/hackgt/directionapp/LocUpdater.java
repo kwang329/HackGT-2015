@@ -16,6 +16,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 /**
  * Contains the methods for continuous location updates
  * Created by Kaiwen on 9/26/2015.

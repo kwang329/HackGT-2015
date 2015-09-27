@@ -16,6 +16,10 @@ public class WaypointQueue {
         pointQueue = new ConcurrentLinkedQueue<>();
     }
 
+    public WaypointQueue(Queue<Location> queue) {
+        pointQueue = queue;
+    }
+
     /**
      * Advances the queue.
      * @return  the waypoint that was just reached.
