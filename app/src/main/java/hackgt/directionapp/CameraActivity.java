@@ -63,6 +63,17 @@ public class CameraActivity extends Activity {
         public void onServiceConnected(ComponentName name, IBinder service) {
             LocUpdater.LocationUpdaterBinder binder = (LocUpdater.LocationUpdaterBinder) service;
             locUpdaterService = binder.getService();
+            WaypointQueue queue = new WaypointQueue();
+            Location l = new Location("");
+            l.setLatitude(33.775218);
+            l.setLongitude(-84.396561);
+            queue.add(l);
+            l = new Location("");
+            l.setLatitude(33.776624);
+            l.setLongitude(-84.396607);
+            queue.add(l);
+            locUpdaterService.setTurnArrow(overlayView);
+            locUpdaterService.setWaypointQueue(queue);
             locUpdaterBound = true;
         }
 
@@ -97,7 +108,7 @@ public class CameraActivity extends Activity {
         Location waypoint = new Location("");
         waypoint.setLatitude(33.775117);
         waypoint.setLongitude(-84.396599);
-        overlayView.setLocation(waypoint); // null should be location of the waypoint
+        overlayView.setLocation(waypoint);
         Intent trackLocation = new Intent(this, LocUpdater.class);
         bindService(trackLocation, mConnection, Context.BIND_AUTO_CREATE);
         startService(trackLocation);
@@ -118,13 +129,6 @@ public class CameraActivity extends Activity {
         @Override
         public void onSurfaceTextureUpdated(SurfaceTexture surface) {
             // Log.i(TAG, "onSurfaceTextureUpdated()");
-            if (locUpdaterBound) {
-                overlayView.approachArrow(locUpdaterService.getCurrentLocation());
-                if (locUpdaterService.getCurrentLocation() != null) {
-                    Log.d(TAG, locUpdaterService.getCurrentLocation().getLatitude() + ", " + locUpdaterService.getCurrentLocation().getLongitude());
-                    Log.d(TAG, locUpdaterService.getCurrentLocation().distanceTo(overlayView.getLocation()) + "");
-                }
-            }
         }
 
         @Override

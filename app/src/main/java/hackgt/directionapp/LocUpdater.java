@@ -32,6 +32,7 @@ public class LocUpdater extends Service implements GoogleApiClient.ConnectionCal
     private LocationRequest mLocationRequest = new LocationRequest();
     WaypointQueue queue;
     private Location currentLocation;
+    private TurnArrow arrow;
 
     @Override
     public void onCreate() {
@@ -82,15 +83,15 @@ public class LocUpdater extends Service implements GoogleApiClient.ConnectionCal
 
     @Override
     public void onLocationChanged(Location location) {
-        currentLocation = location;
-        TextView locationLabel = (TextView) findViewById(R.id.locationLabel);
-        locationLabel.setText(locationLabel.getText() + "\n(" + location.getLatitude()
-                + ", " + location.getLongitude() + ")");
-        if (queue.hasReachedNextWaypoint(location)) {
-            queue.goToNextWaypoint();
-        }
-        if (queue.finishedPath()) {
-            stopLocationRequest();
+        if (location != null) {
+            currentLocation = location;
+            if (queue.hasReachedNextWaypoint(location)) {
+                queue.goToNextWaypoint();
+            }
+            if (queue.finishedPath()) {
+                stopLocationRequest();
+            }
+            arrow.approachArrow(currentLocation);
         }
     }
 
@@ -113,11 +114,18 @@ public class LocUpdater extends Service implements GoogleApiClient.ConnectionCal
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        Log.d(TAG, "bound");
         return new LocationUpdaterBinder();
     }
 
     public Location getCurrentLocation() {
         return currentLocation;
+    }
+
+    public void setWaypointQueue(WaypointQueue queue) {
+        this.queue = queue;
+    }
+
+    public void setTurnArrow(TurnArrow arrow) {
+        this.arrow = arrow;
     }
 }

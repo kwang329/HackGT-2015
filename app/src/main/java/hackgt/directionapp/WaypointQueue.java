@@ -18,6 +18,14 @@ public class WaypointQueue {
 
     public WaypointQueue(Queue<Location> queue) {
         pointQueue = queue;
+        current = pointQueue.remove();
+    }
+
+    public void add(Location location) {
+        pointQueue.add(location);
+        if (pointQueue.size() == 1 && current == null)  {
+            current = pointQueue.remove();
+        }
     }
 
     /**
@@ -38,7 +46,7 @@ public class WaypointQueue {
      */
     public boolean hasReachedNextWaypoint(Location location) {
         double distance = current.distanceTo(location);
-        return (distance < (1 / 2500));
+        return (distance < 50);
     }
 
     /**
